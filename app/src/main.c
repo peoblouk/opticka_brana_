@@ -16,6 +16,7 @@
 char szTemp[8];
 int min = 0, secs = 0;
 uint16_t mtime_key = 0;
+bool status = FALSE;
 
 ////////////////////////////////////////////////////////////////////
 //! Uživatelské funkce
@@ -35,12 +36,18 @@ int main(void)
 {
     setup();
 
-    while (1)
+    if (GPIO_ReadInputPin(SENZOR_PORT, SENSOR_PIN) == RESET)
+    {
+        status == TRUE;
+    }
+
+    while (status == TRUE)
     {
         if (GPIO_ReadInputPin(BTN_RST_PORT, BTN_RST_PIN) == RESET)
         {
             secs = 0;
             min = 0;
+            status = FALSE;
         }
         if ((get_milis() - mtime_key) > 1000) // každých 1500 ms
         {
@@ -53,6 +60,7 @@ int main(void)
             if (min == 100)
             {
                 min = 0;
+                status = FALSE;
             }
             sprintf(szTemp, "%02d:%02d", min, secs);
 
